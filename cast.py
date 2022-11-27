@@ -1,3 +1,34 @@
+"""
+(0 a 30 puntos) [Criterio subjetivo] Según la estética de su nivel
+(0 a 30 puntos) Según cuantos fps pueda renderizar su software
+
+(10 puntos) Por colocar un contador de fps
+    -10 pts
+
+(20 puntos) Por implementar una cámara con movimiento hacia delante y hacia atrás y rotación (como la que hicimos en clase)
+    -20 pts
+(10 puntos) Por implementar rotación con el mouse (solo horizontal)
+    -10 pts
+
+(10 puntos) Por implementar un minimapa que muestre la posición de jugador en el mundo. No puede estar lado a lado del mapa principal, debe estar en una esquina. 
+    -10 pts
+
+(5 puntos) Por agregar música de fondo.
+    -5 pts
+(10 puntos) Por agregar efectos de sonido
+    -10 pts
+
+(5 puntos) Por agregar una pantalla de bienvenida 
+    -5 pts
+(10 puntos mas) si la pantalla permite seleccionar entre multiples niveles 
+    -10 pts
+(10 puntos) Por agregar una pantalla de exito cuando se cumpla una condicion en el nivel
+    -10 pts
+
+TOTAL (sin criterios subjetivos): 90 pts
+TOTAL (con criterios subjetivos): 150 pts
+"""
+
 import pygame
 from math import *
 import pygame_menu
@@ -6,8 +37,8 @@ from Raycaster import *
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
-SKY = (40,100,200)
-GROUND = (200,200,100)
+SKY = (135,206,235)
+GROUND = (100,0,0)
 TRANSPARENT = (152,0,136,255)
 
 def music(music):
@@ -27,19 +58,20 @@ def running(screen, map, musica):
     r = Raycaster(screen)
     r.load_map(map)
 
-    music(musica)
+    music(musica)        
+    clock = pygame.time.Clock()
 
     running = True
     while running:
-        screen.fill(BLACK,(0,0,r.width,r.height))
-        screen.fill(SKY,(r.width/2,0,r.width,r.height/2))
-        screen.fill(GROUND, (r.width/2,r.height/2,r.width,r.height/2))
+        screen.fill(BLACK,(0,0,100,r.height))
+        screen.fill(SKY,(100,0,900,r.height/2))
+        screen.fill(GROUND, (100,r.height/2,900,r.height/2))
         r.render()
         r.clearZ()
 
-        screen.blit(FPS(), (0,475))
-
-        pygame.display.update()
+        fps = str("FPS: "+str(int(clock.get_fps())))
+        fps = (pygame.font.SysFont("Arial", 20)).render(fps, 10, pygame.Color("white"))
+        screen.blit(fps, (0,475))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -60,6 +92,9 @@ def running(screen, map, musica):
                 r.player['y'] -= 10
             if keys[pygame.K_DOWN]:
                 r.player['y'] += 10
+
+        clock.tick(60)
+        pygame.display.update()
     
     """MUSICA DE FONDO"""
     music('./music/MOTOMAMI.mp3')

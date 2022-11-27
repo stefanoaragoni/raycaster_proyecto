@@ -5,9 +5,6 @@ import pygame_menu
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 
-SKY = (40,100,200)
-GROUND = (200,200,100)
-
 TRANSPARENT = (152,0,136,255)
 
 colors = [
@@ -48,7 +45,10 @@ class Raycaster(object):
     def __init__(self, screen):
         self.screen = screen
         _, _, self.width, self.height= screen.get_rect()
-        self.blocksize = 50
+
+        self.minimap = 100
+        
+        self.blocksize = 90
         self.map = []
         self.player = {
             'x': int(self.blocksize + self.blocksize / 2),
@@ -119,7 +119,7 @@ class Raycaster(object):
                 tx = int(maxhit * 128 / self.blocksize)
                 return d, self.map[j][i], tx
 
-            self.point(x,y)
+            self.point(int(x/9),int(y/9))
             d += 1
     
     def draw_map(self):
@@ -166,29 +166,20 @@ class Raycaster(object):
 
     def render(self):
         self.draw_map()
-        self.draw_player()
+        #self.draw_player()
 
-        density = 10
-        for i in range(0,density):
-            a = self.player['a'] - self.player['fov']/2 + self.player['fov'] * i/density
-            d,c, _ = self.cast_ray(a)
-
-        for i in range(0,500):
-            self.point(499,i)
-            self.point(500,i)
-            self.point(501,i)
-
-        for i in range(0,int(self.width/2)):
-            a = self.player['a'] - self.player['fov']/2 + self.player['fov'] * i/(self.width/2)
+        size = 900
+        size2 = 100
+        for i in range(0,int(size)):
+            a = self.player['a'] - self.player['fov']/2 + self.player['fov'] * i/(size)
             d,c,tx = self.cast_ray(a)
 
-            x = int(self.width/2) + i
+            x = int(size2) + i
             h = self.height/(d * cos(a - self.player['a'])) * self.height /10
 
             if self.zbuffer[i] >= d:
                 self.draw_stake(x,h,c,tx)
                 self.zbuffer[i] = d
-        
 
-        for enemy in enemies:
-            self.draw_sprite(enemy)
+        #for enemy in enemies:
+        #    self.draw_sprite(enemy)

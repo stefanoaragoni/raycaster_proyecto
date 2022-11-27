@@ -31,15 +31,10 @@ sprite4= pygame.image.load('./sprite/sprite4.png')
 
 enemies = [
     {
-        'x':100,
+        'x':150,
         'y':150,
         'sprite': sprite1,
-    },
-    {
-        'x':300,
-        'y':300,
-        'sprite': sprite2,
-    },
+    }
 ]
 
 class Raycaster(object):
@@ -49,7 +44,7 @@ class Raycaster(object):
 
         self.minimap = 100
         
-        self.blocksize = 90
+        self.blocksize = 50
         self.map = []
         self.player = {
             'x': int(self.blocksize + self.blocksize / 2),
@@ -120,7 +115,7 @@ class Raycaster(object):
                 tx = int(maxhit * 128 / self.blocksize)
                 return d, self.map[j][i], tx
 
-            #self.point(int(x/9),int(y/9))
+            self.point(int(x/5),int(y/5))
             d += 1
     
     def draw_map(self):
@@ -136,45 +131,39 @@ class Raycaster(object):
                 
     def draw_player(self):
         try:
-            self.point(int(self.player['x']/9),int(self.player['y']/9),RED)
-            self.point((int(self.player['x']/9)+1),int(self.player['y']/9),RED)
-            self.point(int(self.player['x']/9),(int(self.player['y']/9)+1),RED)
-            self.point((int(self.player['x']/9)-1),(int(self.player['y']/9)),RED)
-            self.point(int(self.player['x']/9),(int(self.player['y']/9)-1),RED)
+            self.point(int(self.player['x']/5),int(self.player['y']/5),RED)
+            self.point((int(self.player['x']/5)+1),int(self.player['y']/5),RED)
+            self.point(int(self.player['x']/5),(int(self.player['y']/5)+1),RED)
+            self.point((int(self.player['x']/5)-1),(int(self.player['y']/5)),RED)
+            self.point(int(self.player['x']/5),(int(self.player['y']/5)-1),RED)
         except:
             pass
 
     def draw_sprite(self,sprite):
-        sprite_a = atan2(sprite['y'] - self.player['y'],sprite['x'] - self.player['x'],)
+        #show sprites
+        sprite_x = sprite['x']
+        sprite_y = sprite['y']
+        sprite_sprite = sprite['sprite']
         
-        d = ((self.player['x']-sprite['x'])**2 + (self.player['y'] - sprite['y'])**2)**0.5
-
-        sprite_size = int(500/d * (500/10))
-
-        sprite_x = int(
-            500 +
-            (sprite_a - self.player['a']) * 500/ self.player['fov'] 
-            + sprite_size/2
-        )
-        sprite_y = int(500/2 - sprite_size/2)
-        
-        for x in range(sprite_x,sprite_x+sprite_size):
-            for y in range(sprite_y,sprite_y+sprite_size):
-                tx = int((x - sprite_x) * 128/sprite_size)
-                ty = int((y-sprite_y) * 128/sprite_size)
-                c = sprite['sprite'].get_at((tx,ty))
-                if c != TRANSPARENT:
-                    if x> 500:
-                        if self.zbuffer[x-500] >= d:
-                            self.point(x,y,c)
-                            self.zbuffer[x - 500] = d
+        sprite_a = atan2(sprite_y - self.player['y'], sprite_x - self.player['x'])
+        sprite_d = ((self.player['x'] - sprite_x) ** 2 + (self.player['y'] - sprite_y) ** 2) ** .5
+        sprite_size = int(self.height / sprite_d * 50)
+        sprite_x = int(self.width / 2 + (sprite_a - self.player['a']) * self.width / self.player['fov'] * 50)
+        sprite_y = int(self.height / 2 - sprite_size / 2)
+        for x in range(sprite_size):
+            for y in range(sprite_size):
+                tx = int(x * 128 / sprite_size)
+                ty = int(y * 128 / sprite_size)
+                c = sprite_sprite.get_at((tx,ty))
+                self.point(sprite_x + x, sprite_y + y, c)
 
     def render(self):
         self.draw_map()
         self.draw_player()
 
-        size = 900
+        size = 500
         size2 = 100
+
         for i in range(0,int(size)):
             a = self.player['a'] - self.player['fov']/2 + self.player['fov'] * i/(size)
             d,c,tx = self.cast_ray(a)
@@ -186,5 +175,12 @@ class Raycaster(object):
                 self.draw_stake(x,h,c,tx)
                 self.zbuffer[i] = d
 
-        #for enemy in enemies:
-        #    self.draw_sprite(enemy)
+        #display sprites
+        for sprite in enemies:
+            self.draw_sprite(sprite)
+
+
+
+
+
+    

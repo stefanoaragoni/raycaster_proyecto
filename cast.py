@@ -1,5 +1,6 @@
 """
 (0 a 30 puntos) [Criterio subjetivo] Según la estética de su nivel
+
 (0 a 30 puntos) Según cuantos fps pueda renderizar su software
 
 (10 puntos) Por colocar un contador de fps
@@ -26,7 +27,7 @@
     -10 pts
 
 TOTAL (sin criterios subjetivos): 90 pts
-TOTAL (con criterios subjetivos): 150 pts
+TOTAL (con criterios subjetivos): 150 pts (30pts de estética y 30pts de FPS)
 """
 
 import pygame
@@ -41,13 +42,20 @@ SKY = (135,206,235)
 GROUND = (100,0,0)
 TRANSPARENT = (152,0,136,255)
 
-def music(music):
-    """MUSICA DE FONDO"""
-    mixer.music.stop()
-    mixer.music.load(music)
-    mixer.music.play(-1)
-    mixer.music.set_volume(0.1)
-    """MUSICA DE FONDO"""
+def music(music, opt=0):
+    if opt == 0:
+        """MUSICA DE FONDO"""
+        mixer.music.stop()
+        mixer.music.load(music)
+        mixer.music.play(-1)
+        mixer.music.set_volume(0.1)
+        """MUSICA DE FONDO"""
+    else:
+        """EFFECTS"""
+        effect = mixer.Sound(music)
+        effect.set_volume(0.2)
+        effect.play()
+        """EFFECTS"""
 
 def FPS():
     fps = str("FPS: "+str(int((pygame.time.Clock()).get_fps())))
@@ -58,7 +66,8 @@ def running(screen, map, musica):
     r = Raycaster(screen)
     r.load_map(map)
 
-    music(musica)        
+    music(musica)
+    music('./soundeffects/Coin_Mario_01.mp3',1)        
     clock = pygame.time.Clock()
 
     running = True
@@ -95,6 +104,11 @@ def running(screen, map, musica):
             if event.type == pygame.MOUSEMOTION:
                 r.player['a'] += event.rel[0]/200
 
+            if keys[pygame.K_a]:
+                r.player['a'] -= pi/10
+            if keys[pygame.K_d]:
+                r.player['a'] += pi/10
+
             #movement with keys (up, down, left, right)
             if keys[pygame.K_UP]:
                 r.player['x'] += cos(r.player['a']) * 5
@@ -117,7 +131,7 @@ def running(screen, map, musica):
     """MUSICA DE FONDO"""
 
 pygame.init()
-screen = pygame.display.set_mode((1000,500))
+screen = pygame.display.set_mode((600,500))
 
 ######################################################### THEME MENU PRINCIPAL
 myimage = pygame_menu.baseimage.BaseImage(
@@ -130,7 +144,7 @@ Rosalia_Theme = Theme(background_color = myimage,
                 title_background_color = (116, 0, 1),
                 title_font = pygame_menu.font.FONT_FRANCHISE,
                 title_font_size = 100,
-                title_offset = (335, 0),
+                #title_offset = (335, 0),
 
                 cursor_selection_color = (255, 255, 255),
 
@@ -143,7 +157,7 @@ Rosalia_Theme = Theme(background_color = myimage,
                 
 
 ######################################################### MENU PRINCIPAL
-menu = pygame_menu.Menu('Rosa-Killa', 1000, 500, theme=Rosalia_Theme)
+menu = pygame_menu.Menu('MOTO-MAZE', 600, 500, theme=Rosalia_Theme)
 
 menu.add.button('Nivel 1', running, screen ,'./map.txt', './music/DIABLO.mp3')
 menu.add.button('Nivel 2', running, screen, './map2.txt', './music/COMOUNG.mp3')

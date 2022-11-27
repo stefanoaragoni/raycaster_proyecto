@@ -3,6 +3,7 @@ from math import *
 import pygame_menu
 
 BLACK = (0,0,0)
+RED = (255,0,0)
 WHITE = (255,255,255)
 
 TRANSPARENT = (152,0,136,255)
@@ -119,7 +120,7 @@ class Raycaster(object):
                 tx = int(maxhit * 128 / self.blocksize)
                 return d, self.map[j][i], tx
 
-            self.point(int(x/9),int(y/9))
+            #self.point(int(x/9),int(y/9))
             d += 1
     
     def draw_map(self):
@@ -135,7 +136,11 @@ class Raycaster(object):
                 
     def draw_player(self):
         try:
-            self.point(self.player['x'],self.player['y'])
+            self.point(int(self.player['x']/9),int(self.player['y']/9),RED)
+            self.point((int(self.player['x']/9)+1),int(self.player['y']/9),RED)
+            self.point(int(self.player['x']/9),(int(self.player['y']/9)+1),RED)
+            self.point((int(self.player['x']/9)-1),(int(self.player['y']/9)),RED)
+            self.point(int(self.player['x']/9),(int(self.player['y']/9)-1),RED)
         except:
             pass
 
@@ -166,7 +171,7 @@ class Raycaster(object):
 
     def render(self):
         self.draw_map()
-        #self.draw_player()
+        self.draw_player()
 
         size = 900
         size2 = 100

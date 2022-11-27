@@ -62,16 +62,28 @@ def running(screen, map, musica):
     clock = pygame.time.Clock()
 
     running = True
+    x = r.player['x']
+    y = r.player['y']
+    a = r.player['a']
+
     while running:
         screen.fill(BLACK,(0,0,100,r.height))
         screen.fill(SKY,(100,0,900,r.height/2))
         screen.fill(GROUND, (100,r.height/2,900,r.height/2))
-        r.render()
-        r.clearZ()
+
+        try:
+            r.render()
+            r.clearZ()
+        except:
+            r.player['x'] = x
+            r.player['y'] = y
 
         fps = str("FPS: "+str(int(clock.get_fps())))
         fps = (pygame.font.SysFont("Arial", 20)).render(fps, 10, pygame.Color("white"))
         screen.blit(fps, (0,475))
+
+        x = r.player['x']
+        y = r.player['y']
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -79,19 +91,23 @@ def running(screen, map, musica):
 
             keys = pygame.key.get_pressed()
 
-            if keys[pygame.K_a]:
-                r.player['a'] -= pi/10
-            if keys[pygame.K_d]:
-                r.player['a'] += pi/10
+            #rotation with mouse
+            if event.type == pygame.MOUSEMOTION:
+                r.player['a'] += event.rel[0]/200
 
-            if keys[pygame.K_RIGHT]:
-                r.player['x'] += 10
-            if keys[pygame.K_LEFT]:
-                r.player['x'] -= 10
+            #movement with keys (up, down, left, right)
             if keys[pygame.K_UP]:
-                r.player['y'] -= 10
+                r.player['x'] += cos(r.player['a']) * 5
+                r.player['y'] += sin(r.player['a']) * 5
             if keys[pygame.K_DOWN]:
-                r.player['y'] += 10
+                r.player['x'] -= cos(r.player['a']) * 5
+                r.player['y'] -= sin(r.player['a']) * 5
+            if keys[pygame.K_LEFT]:
+                r.player['x'] -= cos(r.player['a'] + pi/2) * 5
+                r.player['y'] -= sin(r.player['a'] + pi/2) * 5
+            if keys[pygame.K_RIGHT]:
+                r.player['x'] += cos(r.player['a'] + pi/2) * 5
+                r.player['y'] += sin(r.player['a'] + pi/2) * 5
 
         clock.tick(60)
         pygame.display.update()

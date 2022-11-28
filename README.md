@@ -3,11 +3,11 @@
 Este proyecto es un juego de laberinto inspirado en Rosalía. Se tienen 3 niveles diferentes, con dificultades distintas, que se pueden seleccionar desde el menú principal. Se tiene 60 SEGUNDOS para encontrar la salida; al encontrarlo, se muestra un mensaje de éxito. En caso contrario, se presenta un mensaje de misión fallida. 
 
 ### Uso
-> Correr el archivo cast.py
-> Movimientos con up-down-left-right
-> Rotación horizontal con 'a', 'd' y el mouse. 
+> Correr el archivo cast.py <br />
+> Movimientos con up-down-left-right <br />
+> Rotación horizontal con 'a', 'd' y el mouse. <br />
 
-###### Se cumplió con los siguientes requisitos de la rúbrica. 
+### Se cumplió con los siguientes requisitos de la rúbrica. 
 - [0 - 30 puntos] Estética de su nivel
 - [0 - 30 puntos] Cuantos fps pueda renderizar su software
 <br />

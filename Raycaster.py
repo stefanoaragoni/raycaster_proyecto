@@ -17,25 +17,14 @@ colors = [
 ]
 
 walls = {
-    '1': pygame.image.load('./wall/wall1.png'),
-    '2': pygame.image.load('./wall/wall2.png'),
-    '3': pygame.image.load('./wall/wall3.png'),
-    '4': pygame.image.load('./wall/wall4.png'),
-    '5': pygame.image.load('./wall/wall5.png'),
+    '0': pygame.image.load('./wall/wall3.png'),
+    '1': pygame.image.load('./wall/wall.png'),
+    '2': pygame.image.load('./wall/wall.png'),
+    '3': pygame.image.load('./wall/wall.png'),
+    '4': pygame.image.load('./wall/wall.png'),
+    '5': pygame.image.load('./wall/wall.png'),
+    '6': pygame.image.load('./wall/wall1.png'),
 }
-
-sprite1= pygame.image.load('./sprite/sprite1.png')
-sprite2= pygame.image.load('./sprite/sprite2.png')
-sprite3= pygame.image.load('./sprite/sprite3.png')
-sprite4= pygame.image.load('./sprite/sprite4.png')
-
-enemies = [
-    {
-        'x':150,
-        'y':150,
-        'sprite': sprite1,
-    }
-]
 
 class Raycaster(object):
     def __init__(self, screen):
@@ -54,19 +43,13 @@ class Raycaster(object):
         }
         self.clearZ()
 
+        self.completed = False
+
     def clearZ(self):
         self.zbuffer = [9999 for z in range(0,self.width)]
 
     def point(self, x, y, c=WHITE):
         self.screen.set_at((x,y),c)
-
-    def block(self, x,y, wall):
-        for i in range(x,x + self.blocksize):
-            for j in range(y,y + self.blocksize):
-                tx = int((i - x) * 128 / self.blocksize)
-                ty = int((j - y) * 128 / self.blocksize)
-                c = wall.get_at((tx,ty))
-                self.point(i,j,c)
 
     def block2(self, x,y, wall):
         for i in range(x,x + 10):
@@ -75,6 +58,8 @@ class Raycaster(object):
                 ty = int((j - y) * 128 / 10)
                 c = wall.get_at((tx,ty))
                 self.point(i,j,c)
+
+        #self.screen.blit(wall, (x,y), (0,0,10,10))
 
     def load_map(self, filename):
         with open(filename) as f:
@@ -90,6 +75,7 @@ class Raycaster(object):
             ty = int((y-start_y) * 128 / height)
             color = walls[c].get_at((tx,ty))
             self.point(x,y,color)
+        
 
     def cast_ray(self, a):
         d = 0
@@ -117,7 +103,8 @@ class Raycaster(object):
 
             self.point(int(x/5),int(y/5))
             d += 1
-    
+
+
     def draw_map(self):
         size = 10
         for x in range(0,100,size):
@@ -139,24 +126,6 @@ class Raycaster(object):
         except:
             pass
 
-    def draw_sprite(self,sprite):
-        #show sprites
-        sprite_x = sprite['x']
-        sprite_y = sprite['y']
-        sprite_sprite = sprite['sprite']
-        
-        sprite_a = atan2(sprite_y - self.player['y'], sprite_x - self.player['x'])
-        sprite_d = ((self.player['x'] - sprite_x) ** 2 + (self.player['y'] - sprite_y) ** 2) ** .5
-        sprite_size = int(self.height / sprite_d * 50)
-        sprite_x = int(self.width / 2 + (sprite_a - self.player['a']) * self.width / self.player['fov'] * 50)
-        sprite_y = int(self.height / 2 - sprite_size / 2)
-        for x in range(sprite_size):
-            for y in range(sprite_size):
-                tx = int(x * 128 / sprite_size)
-                ty = int(y * 128 / sprite_size)
-                c = sprite_sprite.get_at((tx,ty))
-                self.point(sprite_x + x, sprite_y + y, c)
-
     def render(self):
         self.draw_map()
         self.draw_player()
@@ -176,8 +145,7 @@ class Raycaster(object):
                 self.zbuffer[i] = d
 
         #display sprites
-        for sprite in enemies:
-            self.draw_sprite(sprite)
+        
 
 
 

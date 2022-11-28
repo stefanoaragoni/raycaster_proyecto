@@ -35,12 +35,16 @@ from math import *
 import pygame_menu
 from pygame import mixer
 from Raycaster import *
+from pygame.locals import *
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
-SKY = (135,206,235)
-GROUND = (100,0,0)
+SKY = (21,49,70)
+GROUND = (172,58,65)
 TRANSPARENT = (152,0,136,255)
+
+nextLevel = pygame.image.load('./imagenes/failed.png')
+failed = pygame.image.load('./imagenes/failed.png')
 
 def music(music, opt=0):
     if opt == 0:
@@ -73,59 +77,119 @@ def running(screen, map, musica):
     running = True
     x = r.player['x']
     y = r.player['y']
-    a = r.player['a']
+
+    counter, text = 60, '60'.rjust(3)
+    pygame.time.set_timer(pygame.USEREVENT, 1000)
+    font = pygame.font.SysFont('Arial', 15)
+    text = ""
+
+    sound = True
 
     while running:
-        screen.fill(BLACK,(0,0,100,r.height))
-        screen.fill(SKY,(100,0,900,r.height/2))
-        screen.fill(GROUND, (100,r.height/2,900,r.height/2))
+        
 
-        try:
-            r.render()
-            r.clearZ()
-        except:
-            r.player['x'] = x
-            r.player['y'] = y
+        if(r.player['x'] >= 370 and r.player['y'] >= 415):
+            r.completed = True
 
-        fps = str("FPS: "+str(int(clock.get_fps())))
-        fps = (pygame.font.SysFont("Arial", 20)).render(fps, 10, pygame.Color("white"))
-        screen.blit(fps, (0,475))
 
-        x = r.player['x']
-        y = r.player['y']
+        if counter <= 0:
+            if sound:
+                music('./soundeffects/Coin_Mario_01.mp3',1)  
+                sound = False
+                
+            screen.fill(BLACK,(0,0,600,r.height))
+            for x in range(0,600):
+                for y in range(0,500):
+                    c = failed.get_at((x,y))
+                    r.point(x,y,c)
+            
+            pygame.display.update()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running= False
+            pygame.event.clear()
+            while True:
+                event = pygame.event.wait()
+                if event.type == KEYDOWN:
+                    if event.key == K_SPACE:
+                        running = False
+                        break        
+
+        elif r.completed:
+            if sound:
+                music('./soundeffects/Coin_Mario_01.mp3',1)  
+                sound = False
+
+            screen.fill(BLACK,(0,0,600,r.height))
+            for x in range(0,600):
+                for y in range(0,500):
+                    c = nextLevel.get_at((x,y))
+                    r.point(x,y,c)
+            
+            pygame.display.update()
+
+            pygame.event.clear()
+            while True:
+                event = pygame.event.wait()
+                if event.type == KEYDOWN:
+                    if event.key == K_SPACE:
+                        running = False
+                        break    
+
+        else:
+            screen.fill(BLACK,(0,0,100,r.height))
+            screen.fill(SKY,(100,0,900,r.height/2))
+            screen.fill(GROUND, (100,r.height/2,900,r.height/2))
+
+            try:
+                r.render()
+                r.clearZ()
+            except:
+                r.player['x'] = x
+                r.player['y'] = y
+
+            fps = str("FPS: "+str(int(clock.get_fps())))
+            fps = (pygame.font.SysFont("Arial", 20)).render(fps, 10, pygame.Color("white"))
+            screen.blit(fps, (0,475))
+
+            x = r.player['x']
+            y = r.player['y']
 
             keys = pygame.key.get_pressed()
+            for event in pygame.event.get():
 
-            #rotation with mouse
-            if event.type == pygame.MOUSEMOTION:
-                r.player['a'] += event.rel[0]/200
+                if event.type == pygame.USEREVENT: 
+                    counter -= 1
+                    text = str(counter).rjust(3) if counter > 0 else 'boom!'
 
-            if keys[pygame.K_a]:
-                r.player['a'] -= pi/10
-            if keys[pygame.K_d]:
-                r.player['a'] += pi/10
+                if event.type == pygame.QUIT:
+                    running= False
 
-            #movement with keys (up, down, left, right)
-            if keys[pygame.K_UP]:
-                r.player['x'] += cos(r.player['a']) * 5
-                r.player['y'] += sin(r.player['a']) * 5
-            if keys[pygame.K_DOWN]:
-                r.player['x'] -= cos(r.player['a']) * 5
-                r.player['y'] -= sin(r.player['a']) * 5
-            if keys[pygame.K_LEFT]:
-                r.player['x'] -= cos(r.player['a'] + pi/2) * 5
-                r.player['y'] -= sin(r.player['a'] + pi/2) * 5
-            if keys[pygame.K_RIGHT]:
-                r.player['x'] += cos(r.player['a'] + pi/2) * 5
-                r.player['y'] += sin(r.player['a'] + pi/2) * 5
+                #rotation with mouse
+                if event.type == pygame.MOUSEMOTION:
+                    r.player['a'] += event.rel[0]/200
 
-        clock.tick(60)
-        pygame.display.update()
-    
+                if keys[pygame.K_a]:
+                    r.player['a'] -= pi/10
+                if keys[pygame.K_d]:
+                    r.player['a'] += pi/10
+
+                #movement with keys (up, down, left, right)
+                if keys[pygame.K_UP]:
+                    r.player['x'] += cos(r.player['a']) * 10
+                    r.player['y'] += sin(r.player['a']) * 10
+                if keys[pygame.K_DOWN]:
+                    r.player['x'] -= cos(r.player['a']) * 10
+                    r.player['y'] -= sin(r.player['a']) * 10
+                if keys[pygame.K_LEFT]:
+                    r.player['x'] -= cos(r.player['a'] + pi/2) * 10
+                    r.player['y'] -= sin(r.player['a'] + pi/2) * 10
+                if keys[pygame.K_RIGHT]:
+                    r.player['x'] += cos(r.player['a'] + pi/2) * 10
+                    r.player['y'] += sin(r.player['a'] + pi/2) * 10
+
+            clock.tick(60)
+            screen.blit(font.render(str("Tiempo: "+text), 10, pygame.Color("white")), (0, 100))
+            pygame.display.update()
+        
     """MUSICA DE FONDO"""
     music('./music/MOTOMAMI.mp3')
     """MUSICA DE FONDO"""

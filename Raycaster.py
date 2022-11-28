@@ -30,8 +30,6 @@ class Raycaster(object):
     def __init__(self, screen):
         self.screen = screen
         _, _, self.width, self.height= screen.get_rect()
-
-        self.minimap = 100
         
         self.blocksize = 50
         self.map = []

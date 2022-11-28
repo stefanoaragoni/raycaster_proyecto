@@ -75,7 +75,6 @@ class Raycaster(object):
             ty = int((y-start_y) * 128 / height)
             color = walls[c].get_at((tx,ty))
             self.point(x,y,color)
-        
 
     def cast_ray(self, a):
         d = 0
@@ -104,17 +103,14 @@ class Raycaster(object):
             self.point(int(x/5),int(y/5))
             d += 1
 
-
     def draw_map(self):
-        size = 10
-        for x in range(0,100,size):
-            for y in range(0,100,size):
-                i = int(x / size)
-                j = int(y / size)
+        for x in range(0,100,10):
+            for y in range(0,100,10):
+                i = int(x / 10)
+                j = int(y / 10)
                 
-                if self.map[j][i] != ' ':
-                    if self.map[j][i] != '\n':
-                        self.block2(x,y, walls[self.map[j][i]])
+                if self.map[j][i] != ' ' and self.map[j][i] != '\n':
+                    self.block2(x,y, walls[self.map[j][i]])
                 
     def draw_player(self):
         try:
@@ -123,6 +119,10 @@ class Raycaster(object):
             self.point(int(self.player['x']/5),(int(self.player['y']/5)+1),RED)
             self.point((int(self.player['x']/5)-1),(int(self.player['y']/5)),RED)
             self.point(int(self.player['x']/5),(int(self.player['y']/5)-1),RED)
+            self.point((int(self.player['x']/5)+1),int(self.player['y']/5+1),RED)
+            self.point((int(self.player['x']/5)+1),int(self.player['y']/5-1),RED)
+            self.point((int(self.player['x']/5)-1),int(self.player['y']/5+1),RED)
+            self.point((int(self.player['x']/5)-1),int(self.player['y']/5-1),RED)
         except:
             pass
 
@@ -130,22 +130,26 @@ class Raycaster(object):
         self.draw_map()
         self.draw_player()
 
-        size = 500
-        size2 = 100
+        #density = 100
+        #for i in range(0,density):
+        #    a = self.player['a'] - self.player['fov']/2 + self.player['fov'] * i/density
+        #    d,c, _ = self.cast_ray(a)
 
-        for i in range(0,int(size)):
-            a = self.player['a'] - self.player['fov']/2 + self.player['fov'] * i/(size)
+        for i in range(0,int(500)):
+            a = self.player['a'] - self.player['fov']/2 + self.player['fov'] * i/(500)
             d,c,tx = self.cast_ray(a)
 
-            x = int(size2) + i
+            x = int(100) + i
             h = self.height/(d * cos(a - self.player['a'])) * self.height /10
 
             if self.zbuffer[i] >= d:
                 self.draw_stake(x,h,c,tx)
                 self.zbuffer[i] = d
 
-        #display sprites
-        
+        for i in range(0,500):
+            self.point(99,i)
+            self.point(100,i)
+            self.point(101,i)
 
 
 

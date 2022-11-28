@@ -4,8 +4,8 @@ Este proyecto es un juego de laberinto inspirado en Rosalía. Se tienen 3 nivele
 
 ### Uso
 > Correr el archivo cast.py <br />
-> Movimientos con up-down-left-right <br />
-> Rotación horizontal con 'a', 'd' y el mouse. <br />
+> Traslación cámara: up, down, left, right <br />
+> Rotación horizontal cámara: 'a', 'd' y el mouse. <br />
 
 ### Se cumplió con los siguientes requisitos de la rúbrica. 
 - [0 - 30 puntos] Estética de su nivel

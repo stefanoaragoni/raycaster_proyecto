@@ -205,7 +205,6 @@ def running(screen, map, musica):
         
     """MUSICA DE FONDO"""
     music('./music/MOTOMAMI.mp3')
-    """MUSICA DE FONDO"""
 
 ######################################################### MENU PRINCIPAL
 menu = pygame_menu.Menu('MOTO-MAZE', 600, 500, theme=Rosalia_Theme)
@@ -218,7 +217,7 @@ menu.add.button('Cerrar', pygame_menu.events.EXIT, background_color=(0, 0, 0), f
 
 """MUSICA DE FONDO"""
 music('./music/MOTOMAMI.mp3')
-"""MUSICA DE FONDO"""
+
 
 menu.mainloop(screen)
 
